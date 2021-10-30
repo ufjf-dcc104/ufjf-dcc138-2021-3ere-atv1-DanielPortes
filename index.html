@@ -13,35 +13,34 @@
     <script>
         let canvas = document.querySelector("canvas");
         let ctx = canvas.getContext("2d");
-        let x = 150;
-        let y = 100;
-        let t0;
-        let dt;
-
         canvas.width = 480;
         canvas.height = 320;
+        let x = 150;
+        let y = 100;
+        let a = 0;
+        let t0;
+        let dt;
         requestAnimationFrame(desenha);
-
 
         function desenha(t) {
             t0 = t0 ?? t;
             dt = (t-t0)/1000;
 
             //Desenha fundo
-            ctx.fillStyle = "Yellow"
+            ctx.fillStyle = "Grey"
             ctx.fillRect(0,0,canvas.width,canvas.height);
 
             // Atualiza estado
-            x = x+ 10*dt;
-            a = a + 2*Math.PI*dt;
-            y = 100+ 100*Math.cos(a);
+            x = x + 10 * dt;
+            a = a + 2 * Math.PI * dt;
+            y = 100 + 100 * Math.cos(a);
 
             //Desenha elementos
-            ctx.fillStyle = "black"
+            ctx.fillStyle = "White"
             ctx.fillRect(x,y,20,20);
+
             requestAnimationFrame(desenha);
             t0 = t;
-
         }
         
     </script>
