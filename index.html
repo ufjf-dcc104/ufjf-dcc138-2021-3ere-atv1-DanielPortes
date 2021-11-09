@@ -25,6 +25,9 @@
             y: 100,
             vy: 0,
             ay: 0,
+            cor: "red",
+            desenhar: desenharElemento,
+            mover: moverElemento
         };
         let e =
         {
@@ -33,7 +36,11 @@
             ax: 0,
             y: 200,
             vy: 0,
-            ay: 0
+            ay: 0,
+            cor: "black",
+            desenhar: desenharElemento,
+            mover: moverElemento,
+            controlar: controlaElemento
         }
 
 
@@ -42,7 +49,28 @@
         let dt;
         const K = 180;
 
-
+        function controlarElemento(alvo) {
+            this.ax = 0.5 * (alvo.x - alvo.x) - 0.2 * this.vx;
+            this.ay = 0.5 * (alvo.y - alvo.y) - 0.2 * this.vy;
+        }
+        function perseguirAlvo(alvo) {
+            this.ax = 0.5 * (alvo.x - alvo.x) - 0.2 * this.vx;
+            this.ay = 0.5 * (alvo.y - alvo.y) - 0.2 * this.vy;
+        }
+        function evitarAlvo(alvo) {
+            this.ax = -0.5 * (alvo.x - alvo.x) - 0.2 * this.vx;
+            this.ay = -0.5 * (alvo.y - alvo.y) - 0.2 * this.vy;
+        }
+        function desenharElemento(cor) {
+            ctx.fillStyle = this.cor;
+            ctx.fillRect(this.x, this.y, 20, 20);
+        }
+        function moverElemento() {
+            this.vx = this.vx + this.ax * dt;
+            this.x = this.x + this.vx * dt;
+            this.vy = this.vy + this.ay * dt;
+            this.y = this.y + this.vy * dt;
+        }
 
         requestAnimationFrame(desenha);
 
@@ -51,7 +79,7 @@
             dt = (t - t0) / 1000;
 
             //Desenha fundo
-            ctx.fillStyle = "Grey"
+            ctx.fillStyle = "Grey";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
             // Atualiza estado
@@ -61,27 +89,15 @@
             y = 130 + 100 * Math.cos(a);
             */
             // controladores
-            e.ay = 0.5 * (p.y - e.y) - 0.2 * e.vy;
-            e.ax = 0.5 * (p.x - e.x) - 0.2 * e.vx;
+            e.controlar(p)
 
-            // atualiza dinamica dos estados
-            p.vx = p.vx + p.ax * dt;
-            p.x = p.x + p.vx * dt;
-            p.vy = p.vy + p.ay * dt;
-            p.y = p.y + p.vy * dt;
-
-            e.vx = e.vx + e.ax * dt;
-            e.x = e.x + e.vx * dt;
-            e.vy = e.vy + e.ay * dt;
-            e.y = e.y + e.vy * dt;
-
+            // atualiza dinâmica dos estados
+            p.mover();
+            e.mover();
 
             //Desenha elementos
-            ctx.fillStyle = "White"
-            ctx.fillRect(p.x, p.y, 20, 20);
-
-            ctx.fillStyle = "red"
-            ctx.fillRect(e.x, e.y, 20, 20);
+            p.desenharElemento();
+            e.desenharElemento();
 
             requestAnimationFrame(desenha);
             t0 = t;
@@ -89,8 +105,8 @@
         addEventListener("keydown", teclaPressionada);
         addEventListener("keyup", teclaSolta);
 
-        function teclaPressionada(e) {
-            switch (e.key) { // controles de velocidades
+        function teclaPressionada(event) {
+            switch (event.key) { // controles de velocidades
                 case "ArrowUp":
                     p.vy = - K;
                     break;
@@ -105,22 +121,18 @@
                     break;
             }
         }
-        function teclaSolta(e) {
-            switch (e.key) { // controles de velocidades
+        function teclaSolta(event) {
+            switch (event.key) { // controles de velocidades
                 case "ArrowUp":
-                    p.vy = 0;
                     p.ay = 0;
                     break;
                 case "ArrowDown":
-                    p.vy = 0;
                     p.ay = 0;
                     break;
                 case "ArrowLeft":
-                    p.vx = 0;
                     p.ax = 0;
                     break;
                 case "ArrowRight":
-                    p.vx = 0;
                     p.ax = 0;
                     break;
             }
