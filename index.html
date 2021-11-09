@@ -17,19 +17,24 @@
         let ctx = canvas.getContext("2d");
         canvas.width = 480;
         canvas.height = 320;
-        let x = 150;
-        let vx = 0;
-        let ax = 0;
-        let y = 100;
-        let vy = 0;
-        let ay = 0;
-
-        let ex = 300;
-        let evx = 0;
-        let eax = 0;
-        let ey = 200;
-        let evy = 0;
-        let eay = 0;
+        let p =
+        {
+            x: 150,
+            vx: 0,
+            ax: 0,
+            y: 100,
+            vy: 0,
+            ay: 0,
+        };
+        let e =
+        {
+            x: 300,
+            vx: 0,
+            ax: 0,
+            y: 200,
+            vy: 0,
+            ay: 0
+        }
 
 
         let a = 0;
@@ -56,27 +61,27 @@
             y = 130 + 100 * Math.cos(a);
             */
             // controladores
-            eay = 0.5 * (y - ey) - 0.2 * evy;
-            eax = 0.5 * (x - ex) - 0.2 * evx;
+            e.ay = 0.5 * (p.y - e.y) - 0.2 * e.vy;
+            e.ax = 0.5 * (p.x - e.x) - 0.2 * e.vx;
 
             // atualiza dinamica dos estados
-            vx = vx + ax * dt;
-            x = x + vx * dt;
-            vy = vy + ay * dt;
-            y = y + vy * dt;
-            
-            evx = evx + eax *dt;
-            ex = ex + evx *dt;
-            evy = evy + eay *dt;
-            ey = ey + evy *dt;
+            p.vx = p.vx + p.ax * dt;
+            p.x = p.x + p.vx * dt;
+            p.vy = p.vy + p.ay * dt;
+            p.y = p.y + p.vy * dt;
+
+            e.vx = e.vx + e.ax * dt;
+            e.x = e.x + e.vx * dt;
+            e.vy = e.vy + e.ay * dt;
+            e.y = e.y + e.vy * dt;
 
 
             //Desenha elementos
             ctx.fillStyle = "White"
-            ctx.fillRect(x, y, 20, 20);
+            ctx.fillRect(p.x, p.y, 20, 20);
 
             ctx.fillStyle = "red"
-            ctx.fillRect(ex,ey, 20, 20);
+            ctx.fillRect(e.x, e.y, 20, 20);
 
             requestAnimationFrame(desenha);
             t0 = t;
@@ -87,41 +92,41 @@
         function teclaPressionada(e) {
             switch (e.key) { // controles de velocidades
                 case "ArrowUp":
-                    vy =- K;
+                    p.vy = - K;
                     break;
                 case "ArrowDown":
-                    vy =+ K;
+                    p.vy = + K;
                     break;
                 case "ArrowLeft":
-                    vx =- K;
+                    p.vx = - K;
                     break;
                 case "ArrowRight":
-                    vx =+ K;
+                    p.vx = + K;
                     break;
             }
         }
-            function teclaSolta(e) {
-                switch (e.key) { // controles de velocidades
-                    case "ArrowUp":
-                    vy = 0;
-                    ay = 0;
+        function teclaSolta(e) {
+            switch (e.key) { // controles de velocidades
+                case "ArrowUp":
+                    p.vy = 0;
+                    p.ay = 0;
                     break;
                 case "ArrowDown":
-                    vy = 0;
-                    ay = 0;
+                    p.vy = 0;
+                    p.ay = 0;
                     break;
                 case "ArrowLeft":
-                    vx = 0;
-                    ax = 0;
+                    p.vx = 0;
+                    p.ax = 0;
                     break;
                 case "ArrowRight":
-                    vx = 0;
-                    ax = 0;
+                    p.vx = 0;
+                    p.ax = 0;
                     break;
-                }
             }
-    
-    
+        }
+
+
     </script>
 </body>
 
