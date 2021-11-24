@@ -17,6 +17,7 @@
         let ctx = canvas.getContext("2d");
         canvas.width = 480;
         canvas.height = 320;
+        let pontos = 0;
         let p =
         {
             x: 150,
@@ -33,8 +34,8 @@
         for (let ne = 0; ne < 10; ne++) {
             let e =
             {
-                x: canvas.width *(1+ Math.random()),
-                vx: 0,
+                x: canvas.width * (1 + 10 * Math.random()),
+                vx: -20,
                 ax: 0,
                 y: canvas.width * Math.random(),
                 vy: 0,
@@ -58,9 +59,8 @@
             cor: "cyan",
             desenhar: desenharElemento,
             mover: moverElemento,
-            controlar:function(){
-                if(this.x > canvas.width + 60)
-                {
+            controlar: function () {
+                if (this.x > canvas.width + 60) {
                     this.x = -1000;
                     this.ax = 0;
                     this.vx = 0;
@@ -73,8 +73,7 @@
         let t0;
         let dt;
         requestAnimationFrame(desenha);
-        function desenha(t) 
-        {
+        function desenha(t) {
             t0 = t0 ?? t;
             dt = (t - t0) / 1000;
 
@@ -92,32 +91,55 @@
                 sprite.mover?.();
                 //Desenha elementos
                 sprite.desenhar();
+
+                if (colidiram(o, sprite) && o !== sprite) {
+                    o.x = -1000;
+                    o.y = -1000;
+                    o.vx = 0;
+                    o.ax = 0;
+                    sprite.x = 1000;
+                    sprite.vx = 100;
+                    sprite.ax = 0;
+                    ++pontos;
+                }
+                if (colidiram(p, sprite) && o !== sprite) {
+                    sprite.x = 1000;
+                    sprite.vx = 100;
+                    sprite.ax = 0;
+                    pontos -= 3;
+                }
             }
+            ctx.fillStyle = "yellow";
+            ctx.font = "20px Impact";
+            ctx.fillText(pontos, 10, 30);
 
             requestAnimationFrame(desenha);
             t0 = t;
         }
-        function moverElemento() 
-        {
+        function moverElemento() {
             this.vx = this.vx + this.ax * dt;
             this.x = this.x + this.vx * dt;
             this.vy = this.vy + this.ay * dt;
             this.y = this.y + this.vy * dt;
         }
-        function desenharElemento() 
-        {
+        function desenharElemento() {
             ctx.fillStyle = this.cor;
             ctx.fillRect(this.x, this.y, 20, 20);
         }
-        function perseguirAlvo(alvo) 
-        {
-            this.ax = 0.5 * (alvo.x - this.x) - 0.2 * this.vx;
-            this.ay = 0.5 * (alvo.y - this.y) - 0.2 * this.vy;
+        function perseguirAlvo(alvo) {
+            this.ax = 100 * Math.sign(alvo.x - this.x) - 0.2 * this.vx;
+            this.ay = 100 * Math.sign(alvo.y - this.y) - 0.2 * this.vy;
         }
-        function evitarAlvo(alvo) 
-        {
+        function evitarAlvo(alvo) {
             this.ax = -0.5 * (alvo.x - this.x) - 0.2 * this.vx;
             this.ay = -0.5 * (alvo.y - this.y) - 0.2 * this.vy;
+        }
+
+        function colidiram(A, B) {
+            return !((A.x > B.x + 20)
+                || (A.x + 20 < B.x)
+                || (A.y > B.y + 20)
+                || (A.y + 20 > B.y))
         }
 
         addEventListener("keydown", teclaPressionada);
@@ -152,10 +174,10 @@
                     break;
                 case "ArrowRight":
                     p.ax = 0;
-                    break;      
+                    break;
                 case " ":
                     if (o.x === -1000) {
-                        
+
                         o.x = p.x;
                         o.y = p.y;
                         o.vx = 200;
